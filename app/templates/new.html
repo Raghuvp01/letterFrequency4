@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/cities/new" method="POST">
+    <div class="row">
+        <div class="col">
+            <label for="Letter">Letter</label>
+            <input id="Letter" type="text" class="form-control" placeholder="Letter" name="Letter">
+        </div>
+        <div class="col">
+            <label for="Frequency">Frequency</label>
+            <input id="Frequency" t ype="text" class="form-control" placeholder="Frequency"
+                   name="Frequency">
+        </div>
+        <div class="col">
+            <label for="Percentage">Percentage</label>
+            <input id="Percentage" type="text" class="form-control" placeholder="Percentage" name="Percentage">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Success</button>
+
+</form>
+
+{% endblock %}

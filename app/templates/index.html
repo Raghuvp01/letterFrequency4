@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Letter</th>
+        <th scope="col">Frequency</th>
+        <th scope="col">Percentage</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for city in cities %}
+    <tr>
+        <td><a href="view/{{city.id}}">{{ city.Letter }}</a></td>
+        <td>{{ city.Frequency }}</td>
+        <td>{{ city.Percentage }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

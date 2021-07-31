@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/edit/{{city.id}}" method="post">
+    <div class="row">
+        <div class="col">
+            <label for="Letter">Letter</label>
+            <input id="Letter" type="text" class="form-control" placeholder="Letter" name="Letter" value="{{city.Letter}}">
+        </div>
+        <div class="col">
+            <label for="Frequency">Frequency</label>
+            <input id="Frequency" type="text" class="form-control" placeholder="Frequency"
+                   name="Frequency" value="{{city.Frequency}}">
+        </div>
+        <div class="col">
+            <label for="Percentage">Percentage</label>
+            <input id="Percentage" type="text" class="form-control" placeholder="Percentage" name="Percentage" value="{{city.Percentage}}">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+
+</form>
+{% endblock %}
