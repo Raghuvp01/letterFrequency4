@@ -1,4 +1,7 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 def create_app():
@@ -7,10 +10,10 @@ def create_app():
 
     # Initialize Plugins
     db.init_app(app)
-    login_manager.init_app(app)
-    sess.init_app(app)
 
     with app.app_context():
         from . import routes
 
         app.register_blueprint(routes.main_bp)
+
+        db.create_all()
