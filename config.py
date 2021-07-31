@@ -9,3 +9,16 @@ class Config:
     FLASK_APP = environ.get("FLASK_APP")
     FLASK_ENV = environ.get("FLASK_ENV")
     SECRET_KEY = environ.get("SECRET_KEY")
+
+    SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
+
+    LESS_BIN = environ.get("LESS_BIN")
+    ASSETS_DEBUG = False
+    LESS_RUN_IN_DEBUG = False
+
+    STATIC_FOLDER = "static"
+    TEMPLATES_FOLDER = "templates"
+    COMPRESSOR_DEBUG = True
+
