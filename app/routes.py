@@ -1,10 +1,12 @@
-from flask import Flask
+from flask import Blueprint
 from flask import render_template
 
-app = Flask(__name__, instance_relative_config=False)
+main_bp = Blueprint(
+    "main_bp", __name__, template_folder="templates", static_folder="static"
+)
 
 
-@app.route('/')
+@main_bp.route("/", methods=["GET"])
 def dashboard():
     return render_template(
         "dashboard.jinja2",
@@ -14,7 +16,7 @@ def dashboard():
     )
 
 
-@app.route('/')
+@main_bp.route("/session", methods=["GET"])
 def session_view():
     return render_template(
         "session.jinja2",

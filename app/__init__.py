@@ -13,4 +13,4 @@ def create_app():
     with app.app_context():
         from . import routes
 
-        app.register_blueprint(routes.dashboard)
+        app.register_blueprint(routes.main_bp)
