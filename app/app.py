@@ -2,15 +2,15 @@ from typing import List, Dict
 import simplejson as json
 from flask import Flask, request, Response, redirect, session
 from flask import render_template, url_for
-# from flaskext.mysql import MySQL
-from flask_mysqldb import MySQL
-# from pymysql.cursors import DictCursor
-import MySQLdb.cursors
+from flaskext.mysql import MySQL
+# from flask_mysqldb import MySQL
+from pymysql.cursors import DictCursor
+# import MySQLdb.cursors
 import re
 
 app = Flask(__name__)
 app.secret_key = 'raghu-key'
-mysql = MySQL(app)
+mysql = MySQL(cursorclass=DictCursor)
 
 app.config['MYSQL_DATABASE_HOST'] = 'db'
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -26,14 +26,14 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = mysql.get_db().cursor()
         cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
         account = cursor.fetchone()
         if account:
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
-            return 'Logged in successfully!'
+            return redirect(url_for('index'))
         else:
             msg = 'Incorrect username/password!'
     return render_template('login.html', msg=msg)
@@ -46,7 +46,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = mysql.get_db().cursor()
         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
         account = cursor.fetchone()
         if account:
@@ -59,7 +59,7 @@ def register():
             msg = 'Please fill out the form!'
         else:
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
-            mysql.connection.commit()
+            mysql.get_db().commit()
             msg = 'You have successfully registered!'
     elif request.method == 'POST':
         msg = 'Please fill out the form!'
@@ -74,20 +74,18 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET'])
 def index():
-    if 'loggedin' in session:
-        user = {'username': 'Letter Frequency Project'}
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM letter_frequency')
-        result = cursor.fetchall()
-        return render_template('index.html', title='Home', user=user, cities=result, username=session['username'])
-    return redirect(url_for('login'))
+    user = {'username': 'Letter Frequency Project'}
+    cursor = mysql.get_db().cursor()
+    cursor.execute('SELECT * FROM letter_frequency')
+    result = cursor.fetchall()
+    return render_template('index.html', title='Home', user=user, cities=result)
 
 
 @app.route('/view/<int:city_id>', methods=['GET'])
 def record_view(city_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     cursor.execute('SELECT * FROM letter_frequency WHERE id=%s', city_id)
     result = cursor.fetchall()
     return render_template('view.html', title='View Form', city=result[0])
@@ -95,7 +93,7 @@ def record_view(city_id):
 
 @app.route('/edit/<int:city_id>', methods=['GET'])
 def form_edit_get(city_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     cursor.execute('SELECT * FROM letter_frequency WHERE id=%s', city_id)
     result = cursor.fetchall()
     return render_template('edit.html', title='Edit Form', city=result[0])
@@ -103,12 +101,12 @@ def form_edit_get(city_id):
 
 @app.route('/edit/<int:city_id>', methods=['POST'])
 def form_update_post(city_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     inputData = (request.form.get('Letter'), request.form.get('Frequency'), request.form.get('Percentage'), city_id)
     sql_update_query = """UPDATE letter_frequency t SET t.Letter = %s, t.Frequency = %s, t.Percentage = %s WHERE t.id 
     = %s """
     cursor.execute(sql_update_query, inputData)
-    mysql.connection.commit()
+    mysql.get_db().commit()
     return redirect("/", code=302)
 
 
@@ -119,26 +117,26 @@ def form_insert_get():
 
 @app.route('/cities/new', methods=['POST'])
 def form_insert_post():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     inputData = (request.form.get('Letter'), request.form.get('Frequency'), request.form.get('Percentage'))
     sql_insert_query = """INSERT INTO letter_frequency (Letter,Frequency,Percentage) VALUES (%s, %s,%s) """
     cursor.execute(sql_insert_query, inputData)
-    mysql.connection.commit()
+    mysql.get_db().commit()
     return redirect("/", code=302)
 
 
 @app.route('/delete/<int:city_id>', methods=['POST'])
 def form_delete_post(city_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     sql_delete_query = """DELETE FROM letter_frequency WHERE id = %s """
     cursor.execute(sql_delete_query, city_id)
-    mysql.connection.commit()
+    mysql.get_db().commit()
     return redirect("/", code=302)
 
 
 @app.route('/api/v1/cities', methods=['GET'])
 def api_browse() -> str:
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     cursor.execute('SELECT * FROM letter_frequency')
     result = cursor.fetchall()
     json_result = json.dumps(result);
@@ -148,7 +146,7 @@ def api_browse() -> str:
 
 @app.route('/api/v1/cities/<int:city_id>', methods=['GET'])
 def api_retrieve(city_id) -> str:
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     cursor.execute('SELECT * FROM letter_frequency WHERE id=%s', city_id)
     result = cursor.fetchall()
     json_result = json.dumps(result);
@@ -158,13 +156,13 @@ def api_retrieve(city_id) -> str:
 
 @app.route('/api/v1/cities/<int:city_id>', methods=['PUT'])
 def api_edit(city_id) -> str:
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     content = request.json
     inputData = (content['Letter'], content['Frequency'], content['Percentage'], city_id)
     sql_update_query = """UPDATE letter_frequency t SET t.Letter = %s, t.Frequency = %s, t.Percentage = %s WHERE t.id 
     = %s """
     cursor.execute(sql_update_query, inputData)
-    mysql.connection.commit()
+    mysql.get_db().commit()
     resp = Response(status=200, mimetype='application/json')
     return resp
 
@@ -173,24 +171,23 @@ def api_edit(city_id) -> str:
 def api_add() -> str:
     content = request.json
 
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     inputData = (content['Letter'], content['Frequency'], content['Percentage'])
     sql_insert_query = """INSERT INTO letter_frequency (Letter,Frequency,Percentage) VALUES (%s, %s,%s) """
     cursor.execute(sql_insert_query, inputData)
-    mysql.connection.commit()
+    mysql.get_db().commit()
     resp = Response(status=201, mimetype='application/json')
     return resp
 
 
 @app.route('/api/v1/cities/<int:city_id>', methods=['DELETE'])
 def api_delete(city_id) -> str:
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.get_db().cursor()
     sql_delete_query = """DELETE FROM letter_frequency WHERE id = %s """
     cursor.execute(sql_delete_query, city_id)
-    mysql.connection.commit()
+    mysql.get_db().commit()
     resp = Response(status=200, mimetype='application/json')
     return resp
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
