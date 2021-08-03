@@ -76,11 +76,13 @@ def logout():
 
 @app.route('/index', methods=['GET'])
 def index():
-    user = {'username': 'Letter Frequency Project'}
-    cursor = mysql.get_db().cursor()
-    cursor.execute('SELECT * FROM letter_frequency')
-    result = cursor.fetchall()
-    return render_template('index.html', title='Home', user=user, cities=result)
+    if 'loggedin' in session:
+        user = {'username': 'Letter Frequency Project'}
+        cursor = mysql.get_db().cursor()
+        cursor.execute('SELECT * FROM letter_frequency')
+        result = cursor.fetchall()
+        return render_template('index.html', title='Home', user=user, cities=result)
+    return redirect(url_for('login'))
 
 
 @app.route('/view/<int:city_id>', methods=['GET'])
