@@ -1,9 +1,5 @@
 # Project Description
 This Project is about letters frequency using Python, flask, MySQL and Docker
-# Postman Screenshot
-![Postman request output](screenshots/Postman.PNG)
-# SQL data screenshot
-![pycharm data query](screenshots/query.PNG)
 # Screenshots of project
 ### Login Page
 ![Login Page](screenshots/loginpage.PNG)
@@ -19,3 +15,7 @@ This Project is about letters frequency using Python, flask, MySQL and Docker
 ![New Page](screenshots/newpage.PNG)
 ### API JSON Endpoint
 ![JSON Endpoint](screenshots/JSON.PNG)  
+# Postman Screenshot
+![Postman request output](screenshots/Postman.PNG)
+# SQL data screenshot
+![pycharm data query](screenshots/query.PNG)
