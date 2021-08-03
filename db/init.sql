@@ -37,12 +37,12 @@ INSERT INTO letter_frequency (Letter, Frequency, Percentage) VALUES
     ('    "Y"',   5910495,  2.0),
     ('    "Z"',     93172,  0.0);
 
-CREATE TABLE IF NOT EXISTS user_data
-(
-    `user_id`  int(5) NOT NULL AUTO_INCREMENT,
-    `login`    varchar(20) DEFAULT NULL,
-    `pass`     varchar(20) DEFAULT NULL,
-    `username` varchar(30) DEFAULT NULL,
-    `email`    varchar(30) DEFAULT NULL,
-    PRIMARY KEY (`user_id`)
-)
+CREATE TABLE IF NOT EXISTS `accounts` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+  	`username` varchar(50) NOT NULL,
+  	`password` varchar(255) NOT NULL,
+  	`email` varchar(100) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `accounts` (`id`, `username`, `password`, `email`) VALUES (1, 'test', 'test', 'test@test.com');

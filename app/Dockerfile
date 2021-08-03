@@ -9,4 +9,4 @@ RUN pip install  -r requirements.txt --upgrade pip
 
 COPY . /app
 
-CMD python routes.py
+CMD python app.py
