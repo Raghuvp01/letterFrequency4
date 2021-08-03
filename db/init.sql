@@ -36,3 +36,13 @@ INSERT INTO letter_frequency (Letter, Frequency, Percentage) VALUES
     ('    "X"',    562732,  0.2),
     ('    "Y"',   5910495,  2.0),
     ('    "Z"',     93172,  0.0);
+
+CREATE TABLE IF NOT EXISTS user_data
+(
+    `user_id`  int(5) NOT NULL AUTO_INCREMENT,
+    `login`    varchar(20) DEFAULT NULL,
+    `pass`     varchar(20) DEFAULT NULL,
+    `username` varchar(30) DEFAULT NULL,
+    `email`    varchar(30) DEFAULT NULL,
+    PRIMARY KEY (`user_id`)
+)
