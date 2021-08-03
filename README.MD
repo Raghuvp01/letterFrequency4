@@ -6,7 +6,7 @@ This Project is about letters frequency using Python, flask, MySQL and Docker
 ### Register Page
 ![Register Page](screenshots/register.PNG)
 ### Homepage
-![Home Page](screenshots/Homepage.PNG)  
+![Home Page](screenshots/Homepag.PNG)  
 ### Viewpage
 ![View Page](screenshots/viewpage.PNG)
 ### Editpage
