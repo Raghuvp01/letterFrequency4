@@ -38,7 +38,5 @@ This Project is about letters frequency using Python, flask, MySQL and Docker
 ![New Page](screenshots/newpage.PNG)
 ### API JSON Endpoint
 ![JSON Endpoint](screenshots/JSON.PNG)  
-# Postman Screenshot
-![Postman request output](screenshots/Postman.PNG)
 # SQL data screenshot
 ![pycharm data query](screenshots/query.PNG)
